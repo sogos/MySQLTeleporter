@@ -1,5 +1,7 @@
 # MySQLTeleporter
 
+Base Image: debian:wheezy
+
 Transfer an InnoDB database from a Running Instance to an another, optimising the transfer (re-create keys at end)
 
 
