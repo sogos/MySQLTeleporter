@@ -100,11 +100,20 @@ do
 done
 echo ">>> Inserting Table Data in Target Server";
 
-for f in /tmp/$MYSQL_DATABASE_SOURCE_NAME/structure/data/*.sql.gz
+for f in /tmp/$MYSQL_DATABASE_SOURCE_NAME/data/*.sql.gz
 do
     echo ">>> Inserting data from file: $f"
 
     gunzip < $f | mysql -h ${MYSQL_SERVER_2_HOST} -u ${MYSQL_SERVER_2_USERNAME}  --password=${MYSQL_SERVER_2_PASSWORD} ${MYSQL_DATABASE_TARGET_NAME}
     (( file_count++ ))
 done
+echo ">>> Re-creating Indexes to Target Server";
 
+for f in /tmp/$MYSQL_DATABASE_SOURCE_NAME/structure/keys/*.sql
+
+do
+    echo ">>> Creating indexes from: $f"
+
+    mysql -h ${MYSQL_SERVER_2_HOST} -u ${MYSQL_SERVER_2_USERNAME}  --password=${MYSQL_SERVER_2_PASSWORD} ${MYSQL_DATABASE_TARGET_NAME} < $f
+    (( file_count++ ))
+done
