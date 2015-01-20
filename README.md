@@ -3,7 +3,9 @@
 
 Step 1: Build the Container
 
+```
 docker build -t="sogos/MySQLTeleporter" github.com/sogos/MySQLTeleporter
+```
 
 Step 2: Run the Container
 
