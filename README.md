@@ -1,5 +1,7 @@
 # MySQLTeleporter
 
+Transfer an InnoDB database from a Running Instance to an another, optimising the transfer (re-create keys at end)
+
 
 Step 1: Build the Container
 
