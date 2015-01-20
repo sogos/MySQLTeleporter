@@ -71,7 +71,7 @@ foreach($other as $other_line) {
 }
 fclose($fp);
 
-if(sizeof($keys) == 0) {
+if(sizeof($keys) > 0) {
 
 	$fpk = fopen($dir_path . '/keys/' . $table_name . '.sql', 'w');
 	$query_for_keys = array();
