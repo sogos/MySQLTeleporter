@@ -61,6 +61,7 @@ else
 fi
 	mkdir -p /tmp/$MYSQL_DATABASE_SOURCE_NAME/structure/create
 	mkdir -p /tmp/$MYSQL_DATABASE_SOURCE_NAME/structure/keys
+	mkdir -p /tmp/$MYSQL_DATABASE_SOURCE_NAME/structure/routines
 	mkdir -p /tmp/$MYSQL_DATABASE_SOURCE_NAME/data
 	cd /tmp/$MYSQL_DATABASE_SOURCE_NAME/structure
 
@@ -75,7 +76,13 @@ if [ "$RESP" = "n" ]; then
 			php /opt/extract_keys.php /tmp/$MYSQL_DATABASE_SOURCE_NAME/structure/$I.sql $I
 			rm -fr $I.sql
 		done
+	echo ">>> Dumping all routines";
+		cd /tmp/$MYSQL_DATABASE_SOURCE_NAME/structure/routines
+			echo "Dumping routines for Database $MYSQL_DATABASE_SOURCE_NAME"
+			mysqldump -u $MYSQL_SERVER_1_USERNAME --password="$MYSQL_SERVER_1_PASSWORD" --host=$MYSQL_SERVER_1_HOST --routines --no-create-info --no-data --no-create-db --skip-opt $MYSQL_DATABASE_SOURCE_NAME  >> "routines.sql";
+
 	echo ">>> Dumping all table Data";
+	
 	cd /tmp/$MYSQL_DATABASE_SOURCE_NAME/data
 	for I in $(mysql -u $MYSQL_SERVER_1_USERNAME --password="$MYSQL_SERVER_1_PASSWORD" --host=$MYSQL_SERVER_1_HOST $MYSQL_DATABASE_SOURCE_NAME -e 'show tables' -s --skip-column-names $1);
 		do
@@ -88,7 +95,6 @@ else
 fi
 
 echo ">>> Re-creating Table structure in Target Server";
-
 
 for f in /tmp/$MYSQL_DATABASE_SOURCE_NAME/structure/create/*.sql
 
@@ -117,3 +123,12 @@ do
     mysql -h ${MYSQL_SERVER_2_HOST} -u ${MYSQL_SERVER_2_USERNAME}  --password=${MYSQL_SERVER_2_PASSWORD} ${MYSQL_DATABASE_TARGET_NAME} < $f
     (( file_count++ ))
 done
+for f in /tmp/$MYSQL_DATABASE_SOURCE_NAME/structure/routines/*.sql
+
+do
+    echo ">>> Importing routines from: $f"
+
+    mysql -h ${MYSQL_SERVER_2_HOST} -u ${MYSQL_SERVER_2_USERNAME}  --password=${MYSQL_SERVER_2_PASSWORD} ${MYSQL_DATABASE_TARGET_NAME} < $f
+    (( file_count++ ))
+done
+
