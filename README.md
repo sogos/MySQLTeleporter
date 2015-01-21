@@ -2,7 +2,12 @@
 
 Base Image: debian:wheezy
 
-Transfer an InnoDB database from a Running Instance to an another, optimising the transfer (re-create keys at end)
+Transfer an MySQL database from a Running Instance to an another, optimized for InnoDB transfer (re-create keys at end)
+
+Todo: 
+
+- Allow to run restoration from an existing DUMP
+- Allow to only make a DUMP
 
 
 Step 1: Build the Container
@@ -11,7 +16,7 @@ Step 1: Build the Container
 docker build -t="sogos/MySQLTeleporter" github.com/sogos/MySQLTeleporter
 ```
 
-Step 2: Run the Container
+Step 2: Run the Container (you can use -d too if you don't have a current DUMP)
 
 ```
 docker run  -t -i \
